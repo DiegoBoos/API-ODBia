@@ -6,10 +6,10 @@ export class RegisterDto {
   @IsOptional()
   fullName?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsDate()
-  birthday: Date;
+  // @ApiProperty()
+  // @IsNotEmpty()
+  // @IsDate()
+  // birthday: Date;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -27,6 +27,6 @@ export class RegisterDto {
   }, {
     message: 'Password must be at least 8 characters long and contain at least one uppercase letter and one number and one symbol character.'
   })
-  password: string;
+  password?: string;
 
 }

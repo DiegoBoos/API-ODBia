@@ -4,6 +4,7 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-google-oauth20';
 import { AuthService } from '../auth.service';
 import { JWtUtil } from 'src/common/utils';
+import { RegisterDto } from '../dtos';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy) {
@@ -24,11 +25,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy) {
     // console.log(accessToken);
     // console.log(refreshToken);
     // console.log(profile);
+    const registerDto: RegisterDto = {
+      fullName: profile.displayName,
+      email: profile.emails[0].value,
+    }
 
-    const user = await this.authService.registerUser(
-      profile.emails[0].value,
-      profile.displayName,
-    );
+    const user = await this.authService.registerUser(registerDto);
 
     const token = this.jwtUtil.getJwtToken({ tenantId: user.tenantId, userId: user.id });
     // console.log('Validate');

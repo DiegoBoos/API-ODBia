@@ -40,7 +40,7 @@ export class AuthController {
 
   @Post('email/register')
   register(@Body() registerDto: RegisterDto) {
-    return this.authService.registerEmail(registerDto);
+    return this.authService.registerUser(registerDto);
   }
 
   @Post('password-restore')

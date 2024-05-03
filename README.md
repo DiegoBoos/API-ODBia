@@ -14,3 +14,4 @@ docker-compose up -d
 ````
 npm run start:dev
 ````
+4. Ejecutar semilla ``/api/seed``
