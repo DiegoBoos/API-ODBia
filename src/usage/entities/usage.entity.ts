@@ -2,9 +2,10 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 't
 
 import { Tenant } from 'src/auth/entities';
 import { Service } from './service.entity';
+import { Suscription } from './suscription.entity';
 
 
-@Entity()
+@Entity({ name: 'usages', schema: 'business'})
 export class Usage {
     @PrimaryGeneratedColumn('uuid')
     id?: string;
@@ -16,12 +17,12 @@ export class Usage {
     @Column({ name: 'service_id' })
     serviceId: string
 
-    @ManyToOne(() => Tenant, tenant => tenant.usages)
-    @JoinColumn({ name: 'tenant_id' })
-    tenant?: Tenant;
+    @ManyToOne(() => Suscription, suscription => suscription.usages)
+    @JoinColumn({ name: 'suscription_id' })
+    suscription?: Suscription;
 
-    @Column({ name: 'tenant_id' })
-    tenantId: string;
+    @Column({ name: 'suscription_id' })
+    suscriptionId: string;
 
     @Column({ name: 'units', type: 'int' })
     units: number;
@@ -29,6 +30,4 @@ export class Usage {
     @Column({ name: 'cost', type: 'float' })
     cost: number;
 
-    @Column({ name: 'timestamp', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    timestamp: Date;
 }

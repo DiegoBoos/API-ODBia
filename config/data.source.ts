@@ -1,5 +1,10 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 
+import * as dotenv from 'dotenv';
+
+// Cargar variables de entorno desde .env
+dotenv.config();
+
 export const DataSourceConfig: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -8,8 +13,8 @@ export const DataSourceConfig: DataSourceOptions = {
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   entities: [__dirname + '/../**/**/*.entity{.ts,.js}'],
-  // synchronize: true,
-  synchronize: process.env.NODE_ENV !== 'production',
+  synchronize: false,
+  // synchronize: process.env.NODE_ENV !== 'production',
 };
 
 export const AppDS = new DataSource(DataSourceConfig);

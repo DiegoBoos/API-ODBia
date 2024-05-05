@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 't
 import { Tenant } from './tenant.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
-@Entity()
+@Entity({ name: 'users', schema: 'auth'})
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id?: string;

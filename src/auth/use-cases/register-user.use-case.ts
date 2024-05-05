@@ -1,10 +1,13 @@
 import { BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import * as bcrypt from 'bcrypt';
+
 import { DataSource, Repository } from 'typeorm';
 import { Tenant, User } from '../entities';
 import { Service, Usage } from 'src/usage/entities';
 import { RegisterDto } from '../dtos';
+import { Suscription } from 'src/usage/entities/suscription.entity';
 
 export class RegisterUserUseCase {
   private readonly logger = new Logger('RegisterUserUseCase');
@@ -21,6 +24,9 @@ export class RegisterUserUseCase {
 
     @InjectRepository(Usage)
     private readonly usageRepository: Repository<Usage>,
+
+    @InjectRepository(Suscription)
+    private readonly suscriptionRepository: Repository<Suscription>,
 
     private readonly dataSource: DataSource,
   ) {}
@@ -50,37 +56,55 @@ export class RegisterUserUseCase {
     try {
       const monthsToAdd = parseInt(process.env.FREE_TIME_MONTHS_EXPIRED || '1',10);
       const currentDate = new Date();
-      const expirationDate = new Date(
-        currentDate.setMonth(currentDate.getMonth() + monthsToAdd),
-      );
+      
 
+      // Create Tenant
       const tenant: Tenant = {
         fullName,
         createdAt: new Date(),
-        cash: +process.env.FREE_CASH,
-        expirationDate
+        
       };
       const newTenant = this.tenantRepository.create(tenant);
       const newTenantSaved = await queryRunner.manager.save(newTenant);
 
+      const passwordHash = password?  await bcrypt.hash(password, +process.env.HASH_SALT): null;
+
+      // Create User
       const user: User = {
         email,
         createdAt: new Date(),
+        password: passwordHash,
         tenantId: newTenantSaved.id,
       };
 
       const newUser = this.userRepository.create(user);
       await queryRunner.manager.save(newUser);
 
+      // Create Suscription
+      const expirationDate = new Date(
+        currentDate.setMonth(currentDate.getMonth() + monthsToAdd),
+      );
+
+      const suscription: Suscription = {
+        receivedDate: new Date(),
+        cash: +process.env.FREE_CASH,
+        expirationDate,
+        tenantId: newTenantSaved.id
+      }
+
+      const newSuscription = this.suscriptionRepository.create(suscription);
+      const newSuscriptionSaved = await queryRunner.manager.save(newSuscription);
+
+      
+       // Create Usages
       const services = await this.serviceRepository.find();
 
       for (const service of services) {
         const usage: Usage = {
-            serviceId: service.id,
-            tenantId: newTenantSaved.id,
-            units: 0,
-            cost: 0,
-            timestamp: new Date(),
+          serviceId: service.id,
+          units: 0,
+          cost: 0,
+          suscriptionId: newSuscriptionSaved.id
         };
         const newUsage = this.usageRepository.create(usage);
         await queryRunner.manager.save(newUsage);
