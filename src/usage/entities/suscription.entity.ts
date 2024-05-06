@@ -10,10 +10,10 @@ export class Suscription {
   @Column({ name: 'cash', type: 'float', default: 0 })
   cash: number;
 
-  @Column({ name: 'received_date', type: 'date', nullable: true })
+  @Column({ name: 'received_date', type: 'timestamp', nullable: true })
   receivedDate: Date | null;
 
-  @Column({ name: 'expiration_date', type: 'date', nullable: true })
+  @Column({ name: 'expiration_date', type: 'timestamp', nullable: true })
   expirationDate: Date | null;
 
   @OneToMany(() => Usage, (usage) => usage.suscription)

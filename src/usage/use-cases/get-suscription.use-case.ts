@@ -1,9 +1,10 @@
-import { Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Suscription } from '../entities/suscription.entity';
 import { User } from 'src/auth/entities';
 
+@Injectable()
 export class GetSuscriptionsUseCase {
   private readonly logger = new Logger('GetSuscriptionsUseCase');
 

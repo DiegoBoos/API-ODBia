@@ -54,7 +54,7 @@ export class RegisterUserUseCase {
     await queryRunner.startTransaction();
 
     try {
-      const monthsToAdd = parseInt(process.env.FREE_TIME_MONTHS_EXPIRED || '1',10);
+      const monthsToAdd = parseInt(process.env.SUSCRIPTION_TIME_MONTHS_EXPIRE || '1',10);
       const currentDate = new Date();
       
 

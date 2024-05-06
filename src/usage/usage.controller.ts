@@ -9,7 +9,7 @@ export class UsageController {
 
   @Get('suscriptions')
   @Auth()
-  getSuscriptions( @GetUser() user: User) {
+  getSuscriptions( @GetUser() user: User ) {
     return this.usageService.getSuscriptions(user);
   }
 

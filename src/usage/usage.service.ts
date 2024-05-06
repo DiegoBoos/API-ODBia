@@ -7,7 +7,6 @@ export class UsageService {
 
 
   constructor(
-    
     private readonly getSuscriptionsUseCase: GetSuscriptionsUseCase,
   ) {}
 

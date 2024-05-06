@@ -22,10 +22,10 @@ export class User {
   @Column({ name: 'tenant_id' })
   tenantId: string;
 
-  @Column({ name: 'created_at', type: 'date' })
+  @Column({ name: 'created_at', type: 'timestamp' })
   createdAt?: Date;
 
-  @Column({ name: 'last_password_changed_date', nullable: true })
+  @Column({ name: 'last_password_changed_date', type: 'timestamp', nullable: true })
   lastPasswordChangedDate?: Date;
 
   @ManyToOne(() => Tenant, (tenant) => tenant.users)

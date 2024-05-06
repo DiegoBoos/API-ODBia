@@ -5,6 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { User } from './user.entity';
 import { Usage } from 'src/usage/entities';
 import { Suscription } from 'src/usage/entities/suscription.entity';
+import { Invoice } from 'src/pay/entities/invoice.entity';
 
 @Entity({ name: 'tenants', schema: 'auth'})
 export class Tenant {
@@ -19,7 +20,7 @@ export class Tenant {
   @IsNotEmpty()
   fullName: string;
 
-  @Column({ name: 'created_at', type: 'date' })
+  @Column({ name: 'created_at', type: 'timestamp' })
   createdAt: Date;
 
   @OneToMany(() => User, (user) => user.tenant)
@@ -27,4 +28,7 @@ export class Tenant {
 
   @OneToMany(() => Suscription, (suscription) => suscription.tenant)
   suscriptions?: Suscription[];
+
+  @OneToMany(() => Invoice, (invoice) => invoice.tenant)
+  invoices?: Suscription[];
 }
