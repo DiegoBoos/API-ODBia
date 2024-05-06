@@ -90,7 +90,7 @@ async function bootstrap() {
   await app.listen(process.env.PORT);
 
   logger.log(`App running on port ${process.env.PORT}`);
-  logger.log(`Ultima Actualización: "1 may 2024"`);
+  logger.log(`Ultima Actualización: "5 may 2024"`);
   
 }
 bootstrap();
