@@ -19,9 +19,6 @@ export class OpenaiService {
   });
 
   async translateText(translateDto: TranslateDto, user: UserAccount) {
-    return await this.translateUseCase.execute(this.openai, {
-      prompt: translateDto.prompt,
-      lang: translateDto.lang,
-    }, user);
+    return await this.translateUseCase.execute(this.openai, translateDto, user);
   }
 }

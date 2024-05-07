@@ -1,6 +1,6 @@
 import { encode } from 'gpt-3-encoder';
-import { UsageCalculate } from '../interfaces';
-import { Rate } from '../entities';
+import { UsageCalculate } from '../../pay/interfaces';
+import { Rate } from '../../pay/entities';
 
 export const calculateUsage = (
   inputText: string,

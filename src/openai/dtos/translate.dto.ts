@@ -8,4 +8,8 @@ export class TranslateDto {
   @IsNotEmpty()
   @IsString()
   readonly lang: string; // Obligatoria
+  
+  @IsNotEmpty()
+  @IsString()
+  readonly model: string; // Obligatoria
 }

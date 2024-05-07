@@ -3,29 +3,30 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Rate } from '../entities/rate.entity';
 import { UsageCalculate, UsageRegister } from '../interfaces';
-import { calculateUsage } from '../utils/calcultate-usage.util';
+import { calculateUsage } from '../../usage/utils/calcultate-usage.util';
 import { RegisterTransactionUseCase } from 'src/usage/use-cases';
 import { Service, Transaction } from 'src/usage/entities';
 import { UserAccount } from 'src/auth/interfaces';
+import { GetRateUseCase } from './get-rate.use-case';
 
 @Injectable()
 export class UsageRegisterUseCase {
   private readonly logger = new Logger('UsageRegisterUseCase');
 
   constructor(
-    @InjectRepository(Rate)
-    private readonly rateRepository: Repository<Rate>,
 
     @InjectRepository(Service)
     private readonly serviceRepository: Repository<Service>,
 
     private readonly registerTransactionUseCase: RegisterTransactionUseCase,
+
+    private readonly getRateUseCase: GetRateUseCase,
   ) {}
 
   async execute(usageRegister: UsageRegister, user: UserAccount) {
     const { model, inputText, outputText } = usageRegister;
 
-    const rate = await this.rateRepository.findOne({ where: { model } });
+    const rate = await this.getRateUseCase.byModel(model);
 
     if (!rate) {
       this.logger.error('Model rate not found.');

@@ -14,9 +14,9 @@ export class GetSuscriptionsUseCase {
   ) {}
 
   async execute(user: UserAccount) {
-    
     const { tenantId } = user;
-    const queryBuilder = this.suscriptionRepository.createQueryBuilder('suscription');
+    const queryBuilder =
+      this.suscriptionRepository.createQueryBuilder('suscription');
 
     const suscriptions = await queryBuilder
       .where({ tenantId })
