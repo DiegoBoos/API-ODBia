@@ -3,7 +3,6 @@ import { IsNotEmpty, Length } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 import { User } from './user.entity';
-import { Usage } from 'src/usage/entities';
 import { Suscription } from 'src/usage/entities/suscription.entity';
 import { Invoice } from 'src/pay/entities/invoice.entity';
 

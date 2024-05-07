@@ -1,11 +1,11 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from 'src/auth/entities';
 import { Invoice } from '../entities/invoice.entity';
 import { SessionDto } from '../dtos';
 import { CkeckoutSession } from 'src/stripe/interfaces/checkout-session.interface';
 import { CheckoutUseCase } from 'src/stripe/use-cases';
+import { UserAccount } from 'src/auth/interfaces';
 
 @Injectable()
 export class CheckoutFailedUseCase {
@@ -17,7 +17,7 @@ export class CheckoutFailedUseCase {
     private readonly checkoutUseCase: CheckoutUseCase,
   ) {}
 
-  async execute(sessionDto: SessionDto, user: User) {
+  async execute(sessionDto: SessionDto, user: UserAccount) {
     const { tenantId } = user;
     const { sessionId } = sessionDto;
 

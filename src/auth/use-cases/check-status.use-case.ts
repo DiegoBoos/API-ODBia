@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 
-import { User } from '../entities';
 import { JWtUtil } from 'src/common/utils';
+import { UserAccount } from '../interfaces';
 
 @Injectable()
 export class CheckStatusUseCase {
@@ -11,17 +11,17 @@ export class CheckStatusUseCase {
     private readonly jwtUtil: JWtUtil,
   ) {}
 
-  async execute(user: User) {
+  async execute(user: UserAccount) {
     const token = this.jwtUtil.getJwtToken({
       tenantId: user.tenantId,
-      userId: user.id,
+      userId: user.userId,
     });
 
     return {
       token,
       user: {
         email: user.email,
-        fullName: user.tenant.fullName,
+        fullName: user.fullName,
       },
     };
   }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { GetSuscriptionsUseCase } from './use-cases';
-import { User } from 'src/auth/entities';
+import { UserAccount } from 'src/auth/interfaces';
 
 @Injectable()
 export class UsageService {
@@ -10,7 +10,7 @@ export class UsageService {
     private readonly getSuscriptionsUseCase: GetSuscriptionsUseCase,
   ) {}
 
-  async getSuscriptions(user: User) {
+  async getSuscriptions(user: UserAccount) {
     return await this.getSuscriptionsUseCase.execute(user);
   }
 }

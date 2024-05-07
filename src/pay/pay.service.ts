@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { User } from 'src/auth/entities';
 import { CheckoutFailedUseCase, CheckoutSuccessUseCase } from './use-cases';
 import { SessionDto } from './dtos';
+import { UserAccount } from 'src/auth/interfaces';
 
 @Injectable()
 export class PayService {
@@ -14,7 +14,7 @@ export class PayService {
     return await this.checkoutSuccessUseCase.execute(sessionDto);
   }
 
-  async checkoutFailed(sessionDto: SessionDto, user: User) {
+  async checkoutFailed(sessionDto: SessionDto, user: UserAccount) {
     return await this.checkoutFailedUseCase.execute(sessionDto, user);
   }
 }

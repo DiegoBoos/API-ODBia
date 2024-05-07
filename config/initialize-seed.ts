@@ -1,5 +1,4 @@
 import { Client } from 'pg';
-import { AppDS } from './data.source';
 
 import * as dotenv from 'dotenv';
 
@@ -18,11 +17,10 @@ async function initialize() {
 
     await client.connect();
 
+    // Services
     const services = await client.query(
         `SELECT 1 FROM business.services`
     );
-    console.log(services);
-    
 
     if (services.rowCount === 0) {
 
@@ -34,6 +32,23 @@ async function initialize() {
             ('video', 0.4);
         `);
         console.log(`Seed service successfully.`);
+    }
+
+    // Rates
+    const rates = await client.query(
+        `SELECT 1 FROM business.rates`
+    );
+
+    if (rates.rowCount === 0) {
+
+        await client.query(`
+            INSERT INTO business.rates (platform, model, cost_input_per_1k, cost_output_per_1k, price_input_per_1k, price_output_per_1k) VALUES
+            ('openia', 'gpt-3.5-turbo', 0.0005, 0.0015, 0.002, 0.003),
+            ('openia', 'gpt-4', 0.03, 0.06, 0.07, 0.13),
+            ('openia', 'gpt-4-32k', 0.06, 0.12, 0.13, 0.25)
+            
+        `);
+        console.log(`Seed rate successfully.`);
     }
     
 

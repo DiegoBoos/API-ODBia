@@ -4,7 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { EmailLoginDto, PasswordRestoreDto, RegisterDto, ResetPasswordDto } from './dtos';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { Auth, GetUser } from './decorators';
-import { User } from './entities';
+import { UserAccount } from './interfaces';
 
 
 @ApiTags('1. API Authentication')
@@ -20,7 +20,7 @@ export class AuthController {
   @Get('check-status')
   @Auth()
   checkAuthStatus(
-    @GetUser() user: User
+    @GetUser() user: UserAccount
   ){
     return this.authService.checkAuthStatus(user);
   }

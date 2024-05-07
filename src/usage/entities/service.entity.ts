@@ -1,17 +1,18 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { Usage } from './usage.entity';
+import { Transaction } from '.';
 
-@Entity({ name: 'services', schema: 'business'})
+
+@Entity({ name: 'services', schema: 'business' })
 export class Service {
-    @PrimaryGeneratedColumn('uuid')
-    id?: string;
+  @PrimaryGeneratedColumn('uuid')
+  id?: string;
 
-    @Column({ name: 'name' })
-    name: string;
+  @Column({ name: 'name' })
+  name: string;
 
-    @Column({ name: 'rate', type: 'float' })
-    rate: number;
+  @Column({ name: 'rate', type: 'float' })
+  rate: number;
 
-    @OneToMany(() => Usage, usage => usage.service)
-    usages?: Usage[];
+  @OneToMany(() => Transaction, (transaction) => transaction.service)
+  transactions?: Transaction[];
 }

@@ -8,6 +8,7 @@ import { MailjetModule } from './common/mailjet/mailjet.module';
 import { UsageModule } from './usage/usage.module';
 import { StripeModule } from './stripe/stripe.module';
 import { PayModule } from './pay/pay.module';
+import { OpenaiModule } from './openai/openai.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { PayModule } from './pay/pay.module';
     UsageModule,
     StripeModule,
     PayModule,
+    OpenaiModule,
   ],
   controllers: [],
   providers: [],

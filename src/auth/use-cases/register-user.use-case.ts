@@ -5,7 +5,7 @@ import * as bcrypt from 'bcrypt';
 
 import { DataSource, Repository } from 'typeorm';
 import { Tenant, User } from '../entities';
-import { Service, Usage } from 'src/usage/entities';
+import { Service } from 'src/usage/entities';
 import { RegisterDto } from '../dtos';
 import { Suscription } from 'src/usage/entities/suscription.entity';
 
@@ -21,9 +21,6 @@ export class RegisterUserUseCase {
 
     @InjectRepository(Service)
     private readonly serviceRepository: Repository<Service>,
-
-    @InjectRepository(Usage)
-    private readonly usageRepository: Repository<Usage>,
 
     @InjectRepository(Suscription)
     private readonly suscriptionRepository: Repository<Suscription>,
@@ -93,22 +90,8 @@ export class RegisterUserUseCase {
       }
 
       const newSuscription = this.suscriptionRepository.create(suscription);
-      const newSuscriptionSaved = await queryRunner.manager.save(newSuscription);
+      await queryRunner.manager.save(newSuscription);
 
-      
-       // Create Usages
-      const services = await this.serviceRepository.find();
-
-      for (const service of services) {
-        const usage: Usage = {
-          serviceId: service.id,
-          units: 0,
-          cost: 0,
-          suscriptionId: newSuscriptionSaved.id
-        };
-        const newUsage = this.usageRepository.create(usage);
-        await queryRunner.manager.save(newUsage);
-    }
 
       // ********** Commit Transaction **********
       await queryRunner.commitTransaction();

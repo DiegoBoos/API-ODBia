@@ -1,9 +1,9 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 
 import * as dotenv from 'dotenv';
-import { User } from 'src/auth/entities';
 import { HandlerCustomerUseCase } from './handler-customer.use-case';
 import { CkeckoutSession } from '../interfaces/checkout-session.interface';
+import { UserAccount } from 'src/auth/interfaces';
 
 // Cargar variables de entorno desde .env
 dotenv.config();
@@ -19,7 +19,7 @@ export class CheckoutUseCase {
     private readonly handlerCustomerUseCase: HandlerCustomerUseCase,
   ) {}
 
-  async create(user: User) {
+  async create(user: UserAccount) {
     try {
       const customer = await this.handlerCustomerUseCase.execute(user);
 
@@ -30,8 +30,6 @@ export class CheckoutUseCase {
         success_url: `${process.env.HOST}:${process.env.PORT}/${process.env.STRIPE_SUCCESS_ENDPOINT}?sessionId={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.HOST}:${process.env.PORT}/${process.env.STRIPE_FAILED_ENDPOINT}`,
       });
-
-      const { url } = session;
 
       return session;
     } catch (error) {

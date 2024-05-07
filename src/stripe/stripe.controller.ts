@@ -1,7 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { StripeService } from './stripe.service';
 import { Auth, GetUser } from 'src/auth/decorators';
-import { User } from 'src/auth/entities';
+import { UserAccount } from 'src/auth/interfaces';
 
 @Controller('stripe')
 export class StripeController {
@@ -9,7 +9,7 @@ export class StripeController {
 
   @Get('create-checkout')
   @Auth()
-  checkout(@GetUser() user: User) {
+  checkout(@GetUser() user: UserAccount) {
     return this.stripeService.createCheckout(user);
   }
 

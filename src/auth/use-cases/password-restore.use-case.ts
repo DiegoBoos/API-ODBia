@@ -43,7 +43,7 @@ export class PasswordRestoreUseCase {
       `,
       [
         // {
-        //   ContentType: 'image/png',
+        //   ContentType: 'image/png',∫
         //   Filename: 'imagen.png',
         //   Base64Content: 'iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==', // Ejemplo de imagen en base64
         // }

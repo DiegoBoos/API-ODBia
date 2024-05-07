@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EmailLoginDto, PasswordRestoreDto, RegisterDto, ResetPasswordDto } from './dtos';
 import { CheckStatusUseCase, EmailLoginUseCase, FindUserUseCase, PasswordRestoreUseCase, RegisterUserUseCase, ResetPasswordUseCase } from './use-cases';
-import { User } from './entities';
+import { UserAccount } from './interfaces';
 
 
 @Injectable()
@@ -37,7 +37,7 @@ export class AuthService {
     return await this.resetPasswordUseCase.execute(resetPasswordDto);
   }
 
-  async checkAuthStatus(user: User) {
+  async checkAuthStatus(user: UserAccount) {
     return await this.checkAuthStatusUseCase.execute(user);
   }
 

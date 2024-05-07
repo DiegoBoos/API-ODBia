@@ -12,13 +12,13 @@ import { JwtService } from '@nestjs/jwt';
 import { MailjetModule } from 'src/common/mailjet/mailjet.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
-import { Service, Usage } from 'src/usage/entities';
+import { Service } from 'src/usage/entities';
 import { Suscription } from 'src/usage/entities/suscription.entity';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Tenant, User, Service, Usage, Suscription]),
+    TypeOrmModule.forFeature([Tenant, User, Service, Suscription]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     MailjetModule
   ],

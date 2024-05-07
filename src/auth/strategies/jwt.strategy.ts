@@ -5,13 +5,18 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { User } from '../entities/user.entity';
 
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
+import { UserAccount } from '../interfaces';
+import { Suscription } from 'src/usage/entities';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-api') {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(Suscription)
+    private readonly suscriptionRepository: Repository<Suscription>,
 
   ) {
     super({
@@ -20,7 +25,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-api') {
     });
   }
 
-  async validate(payload: any): Promise<any> {
+  async validate(payload: any): Promise<UserAccount> {
     const { userId } = payload;
 
     const queryBuilder = this.userRepository.createQueryBuilder('user');
@@ -33,10 +38,18 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-api') {
     if (!user)
       throw new UnauthorizedException('Unauthorized');
 
-    delete user.password;
-    delete user.createdAt;
-    delete user.lastPasswordChangedDate;
+    const currentSuscription = await this.suscriptionRepository.findOne(
+      { where: { expirationDate: MoreThan(new Date()) } },
+    );
 
-    return user;
+    const userAccount: UserAccount = {
+      userId: user.id,
+      email: user.email,
+      tenantId: user.tenantId,
+      fullName: user.tenant.fullName || '',
+      currentSuscriptionId: currentSuscription? currentSuscription.id: null
+    }
+
+    return userAccount;
   }
 }

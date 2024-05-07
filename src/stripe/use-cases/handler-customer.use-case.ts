@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 
 import * as dotenv from 'dotenv';
-import { User } from 'src/auth/entities';
+import { UserAccount } from 'src/auth/interfaces';
 
 // Cargar variables de entorno desde .env
 dotenv.config();
@@ -17,7 +17,7 @@ export class HandlerCustomerUseCase {
 
   constructor() {}
 
-  async execute(user: User) {
+  async execute(user: UserAccount) {
 
   try {
     
