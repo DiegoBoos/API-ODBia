@@ -9,6 +9,9 @@ import { UsageModule } from './usage/usage.module';
 import { StripeModule } from './stripe/stripe.module';
 import { PayModule } from './pay/pay.module';
 import { OpenaiModule } from './openai/openai.module';
+import { WSocketModule } from './wsocket/wsocket.module';
+
+
 
 @Module({
   imports: [
@@ -19,6 +22,7 @@ import { OpenaiModule } from './openai/openai.module';
     StripeModule,
     PayModule,
     OpenaiModule,
+    WSocketModule,
   ],
   controllers: [],
   providers: [],

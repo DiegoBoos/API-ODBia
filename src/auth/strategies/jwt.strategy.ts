@@ -39,7 +39,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt-api') {
       throw new UnauthorizedException('Unauthorized');
 
     const currentSuscription = await this.suscriptionRepository.findOne(
-      { where: { expirationDate: MoreThan(new Date()) } },
+      { where: { expirationDate: MoreThan(new Date()), tenantId:user.tenantId } },
     );
 
     const userAccount: UserAccount = {

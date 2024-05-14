@@ -44,6 +44,6 @@ import { Suscription } from 'src/usage/entities/suscription.entity';
       useClass: AuthService,
     },
   ],
-  exports: [JwtStrategy]
+  exports: [JwtStrategy, JWtUtil, FindUserUseCase]
 })
 export class AuthModule {}
