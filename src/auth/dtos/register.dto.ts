@@ -29,4 +29,7 @@ export class RegisterDto {
   })
   password?: string;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  token?: string;
 }

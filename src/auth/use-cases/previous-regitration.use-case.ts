@@ -2,12 +2,12 @@ import { Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../entities';
-import { PasswordRestoreDto } from '../dtos';
+import { PreviousRegistrationDto } from '../dtos';
 import { JWtUtil } from 'src/common/utils';
 import { MailjetService } from 'src/common/mailjet/mailjet.service';
 
-export class PasswordRestoreUseCase {
-  private readonly logger = new Logger('PasswordRestoreUseCase');
+export class PreviousRegistrationUseCase {
+  private readonly logger = new Logger('PreviousRegistrationUseCase');
 
   constructor(
     @InjectRepository(User)
@@ -17,29 +17,30 @@ export class PasswordRestoreUseCase {
     private readonly mailjetService: MailjetService,
   ) {}
 
-  async execute(passwordRestoreDto: PasswordRestoreDto) {
-    const { email } = passwordRestoreDto;
+  async execute(previousRegistrationDto: PreviousRegistrationDto) {
+    const { email, fullName } = previousRegistrationDto;
+
     const queryBuilder = this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.tenant', 'tenant');
 
-    const user = await queryBuilder.where({ email }).andWhere('password IS NOT NULL').getOne();
+    const user = await queryBuilder.where({ email }).getOne();
 
-    if (!user) throw new UnauthorizedException(`The User with email ${email} not exists`);
+    if (user) throw new UnauthorizedException(`The User with email ${email} exists`);
 
     
-    const token = this.jwtUtil.getJwtToken({ tenantId: user.tenantId, userId: user.id });
+    const token = this.jwtUtil.getJwtToken({ email, fullName: fullName || null });
 
-    const resetPasswordUrl = `${process.env.FRONTEND_URL}/#/auth/reset-password/${token}`;
+    const previousRegistrationdUrl = `${process.env.FRONTEND_URL}/#/auth/confirm-user/${token}`;
 
     await this.mailjetService.sendEmail(
       email,
-      'Restauración de contraseña - ODBia',
+      'Confirmación de Usuario - ODBia',
       '',
       `
-      <h3>Restaurar contraseña - ODBia</h3>
+      <h3>Confirmación de Usuario - ODBia</h3>
       <br>
-      <p>Para restaurar la contraseña diríjase al siguiente link: ${resetPasswordUrl}</p>
+      <p>Para confimar el usuario diríjase al siguiente link: ${previousRegistrationdUrl}</p>
       `,
       [
         // {
@@ -51,7 +52,7 @@ export class PasswordRestoreUseCase {
     );
 
     return {
-      message: `Se envió el link de restauración de contraseña al correo: ${email}`,
+      message: `Se envió el link de confirmación al correo: ${email}`,
     };
   }
 }

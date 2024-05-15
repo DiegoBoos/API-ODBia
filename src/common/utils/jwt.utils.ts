@@ -18,18 +18,18 @@ export class JWtUtil {
     return token;
   }
 
-  public verifyToken(token: string ): string {
+  public verifyToken(token: string ): any {
     try {
       this.jwtService.verify(token, this.jwtConfig);
 
       const payload = this.jwtService.decode(token);
-      const { userId } = payload;
+      // const { userId } = payload;
 
-      if (!userId) {
+      if (!payload) {
         throw new Error(`Invalid Token`);
       }
 
-      return userId;
+      return payload;
     
     } catch (error) {
 

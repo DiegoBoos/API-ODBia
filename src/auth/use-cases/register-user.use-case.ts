@@ -1,13 +1,13 @@
-import { BadRequestException, Logger } from '@nestjs/common';
+import { BadRequestException, Logger, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import * as bcrypt from 'bcrypt';
 
 import { DataSource, Repository } from 'typeorm';
 import { Tenant, User } from '../entities';
-import { Service } from 'src/usage/entities';
 import { RegisterDto } from '../dtos';
 import { Suscription } from 'src/usage/entities/suscription.entity';
+import { JWtUtil } from 'src/common/utils';
 
 export class RegisterUserUseCase {
   private readonly logger = new Logger('RegisterUserUseCase');
@@ -19,16 +19,28 @@ export class RegisterUserUseCase {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
 
-    @InjectRepository(Service)
-    private readonly serviceRepository: Repository<Service>,
-
     @InjectRepository(Suscription)
     private readonly suscriptionRepository: Repository<Suscription>,
+
+    private readonly jwtUtil: JWtUtil,
 
     private readonly dataSource: DataSource,
   ) {}
 
   async execute(registerDto: RegisterDto) {
+
+    const { token } = registerDto;
+    
+    if (token) {
+      try {
+        const { email, fullName } = this.jwtUtil.verifyToken(token);
+
+        registerDto.email = email;
+        registerDto.fullName = fullName || '';
+      } catch (error) {
+        throw new UnauthorizedException('Invalid Token');
+      }
+    }
 
     const { email, fullName, password } = registerDto;
     const queryBuilder = this.userRepository.createQueryBuilder('user');

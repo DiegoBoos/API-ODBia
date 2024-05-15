@@ -23,5 +23,21 @@ export class WSocketService {
 
   removeClient(clientId: string) {
     delete this.connectedClients[clientId];
+    console.log(this.connectedClients);
   }
+
+   checkUserConnection(userId: string): boolean {
+
+
+    for (const clientId of Object.keys(this.connectedClients)) {
+      const connectedClient = this.connectedClients[clientId];
+
+      if (connectedClient.userId === userId) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
 }

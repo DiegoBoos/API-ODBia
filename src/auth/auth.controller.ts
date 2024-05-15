@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
-import { EmailLoginDto, PasswordRestoreDto, RegisterDto, ResetPasswordDto } from './dtos';
+import { EmailLoginDto, PasswordRestoreDto, PreviousRegistrationDto, RegisterDto, ResetPasswordDto } from './dtos';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { Auth, GetUser } from './decorators';
 import { UserAccount } from './interfaces';
@@ -12,7 +12,7 @@ import { UserAccount } from './interfaces';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('email/login')
+  @Post('email/login')
   handleEmailLogin(@Body() emailLoginDto: EmailLoginDto) {
     return this.authService.emailLogin(emailLoginDto);
   }
@@ -41,6 +41,11 @@ export class AuthController {
   @Post('email/register')
   register(@Body() registerDto: RegisterDto) {
     return this.authService.registerUser(registerDto);
+  }
+
+  @Post('previous-registration')
+  previousRegistration(@Body() previousRegistrationDto: PreviousRegistrationDto) {
+    return this.authService.previousRegistration(previousRegistrationDto);
   }
 
   @Post('password-restore')

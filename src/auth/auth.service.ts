@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EmailLoginDto, PasswordRestoreDto, RegisterDto, ResetPasswordDto } from './dtos';
-import { CheckStatusUseCase, EmailLoginUseCase, FindUserUseCase, PasswordRestoreUseCase, RegisterUserUseCase, ResetPasswordUseCase } from './use-cases';
+import { CheckStatusUseCase, EmailLoginUseCase, FindUserUseCase, PasswordRestoreUseCase, PreviousRegistrationUseCase, RegisterUserUseCase, ResetPasswordUseCase } from './use-cases';
 import { UserAccount } from './interfaces';
 
 
@@ -15,6 +15,7 @@ export class AuthService {
     private readonly passwordRestoreUseCase: PasswordRestoreUseCase,
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
     private readonly checkAuthStatusUseCase: CheckStatusUseCase,
+    private readonly previousRegistrationUseCase: PreviousRegistrationUseCase,
   ) {}
 
   async findUser(id: string) {
@@ -31,6 +32,10 @@ export class AuthService {
 
   async passwordRestore(passwordRestoreDto: PasswordRestoreDto) {
     return await this.passwordRestoreUseCase.execute(passwordRestoreDto);
+  }
+
+  async previousRegistration(registerDto: RegisterDto) {
+    return await this.previousRegistrationUseCase.execute(registerDto);
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {

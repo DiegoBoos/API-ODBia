@@ -1,5 +1,4 @@
 import {
-
   SubscribeMessage,
   OnGatewayInit,
   OnGatewayConnection,
@@ -8,11 +7,9 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 
-
 import { Server, Socket } from 'socket.io';
 import { JWtUtil } from 'src/common/utils';
 import { WSocketService } from './wsocket.service';
-
 
 @WebSocketGateway(+process.env.WS_PORT, { cors: true })
 export class WSocketGateway
@@ -37,9 +34,13 @@ export class WSocketGateway
     }
 
     try {
-      const verifyToken = this.jwtUtil.verifyToken(token.toString());
+      const { userId } = this.jwtUtil.verifyToken(token.toString());
 
-      this.wSocketService.registerClient(client, verifyToken);
+      const checkUserConnection: boolean =
+        this.wSocketService.checkUserConnection(userId);
+      if (!checkUserConnection) {
+        this.wSocketService.registerClient(client, userId);
+      }
       // console.log('Hola alguien se conecto al socket 👌👌👌', verifyToken);
     } catch (e) {
       client.disconnect();
@@ -67,5 +68,4 @@ export class WSocketGateway
     console.log(payload);
     this.server.to(`room_${room}`).emit('new_message', message);
   }
-
 }

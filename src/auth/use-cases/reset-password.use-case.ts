@@ -12,7 +12,6 @@ export class ResetPasswordUseCase {
   private readonly logger = new Logger('EmailLoginUseCase');
 
   constructor(
-  
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
 
@@ -23,8 +22,7 @@ export class ResetPasswordUseCase {
     const { password, token } = resetPasswordDto;
 
     try {
-      
-      const userId = this.jwtUtil.verifyToken(token);
+      const { userId } = this.jwtUtil.verifyToken(token);
 
       if (userId) {
         const queryBuilder = this.userRepository.createQueryBuilder('user');
@@ -32,17 +30,19 @@ export class ResetPasswordUseCase {
 
         if (!user) throw new UnauthorizedException('Invalid Token');
 
-        const passwordHash =  await bcrypt.hash(password, +process.env.HASH_SALT);
+        const passwordHash = await bcrypt.hash(
+          password,
+          +process.env.HASH_SALT,
+        );
 
         await this.userRepository.update(userId, {
           password: passwordHash,
-          lastPasswordChangedDate: new Date()
+          lastPasswordChangedDate: new Date(),
         });
 
         return {
-          ok: true
-        }
-
+          ok: true,
+        };
       } else {
         throw new UnauthorizedException('Invalid Token');
       }
@@ -51,6 +51,3 @@ export class ResetPasswordUseCase {
     }
   }
 }
-
-
-
