@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { EmailLoginDto, PasswordRestoreDto, RegisterDto, ResetPasswordDto } from './dtos';
-import { CheckStatusUseCase, EmailLoginUseCase, FindUserUseCase, PasswordRestoreUseCase, PreviousRegistrationUseCase, RegisterUserUseCase, ResetPasswordUseCase } from './use-cases';
+import { EmailLoginDto, PasswordRestoreDto, RegisterDto, ResetPasswordDto, SocialRegisterDto } from './dtos';
+import { CheckStatusUseCase, EmailLoginUseCase, FindUserUseCase, PasswordRestoreUseCase, PreviousRegistrationUseCase, RegisterUserUseCase, ResetPasswordUseCase, SocialRegisterUseCase } from './use-cases';
 import { UserAccount } from './interfaces';
 
 
@@ -11,6 +11,7 @@ export class AuthService {
   constructor(
     private readonly findUserUseCase: FindUserUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
+    private readonly socialRegisterUseCase: SocialRegisterUseCase,
     private readonly emailLoginUseCase: EmailLoginUseCase,
     private readonly passwordRestoreUseCase: PasswordRestoreUseCase,
     private readonly resetPasswordUseCase: ResetPasswordUseCase,
@@ -24,6 +25,10 @@ export class AuthService {
 
   async registerUser(registerDto: RegisterDto) {
     return await this.registerUserUseCase.execute(registerDto);
+  }
+
+  async socialRegister(registerDto: SocialRegisterDto) {
+    return await this.socialRegisterUseCase.execute(registerDto);
   }
 
   async emailLogin(emailLoginDto: EmailLoginDto) {

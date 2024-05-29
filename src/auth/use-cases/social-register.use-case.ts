@@ -1,16 +1,19 @@
-import { BadRequestException, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import * as bcrypt from 'bcrypt';
 
 import { DataSource, Repository } from 'typeorm';
 import { Tenant, User } from '../entities';
 import { RegisterDto } from '../dtos';
 import { Suscription } from 'src/usage/entities/suscription.entity';
+import { JWtUtil } from 'src/common/utils';
 import { AuthProviderEnum } from '../interfaces/auth-provider.enum';
 
-export class RegisterUserUseCase {
-  private readonly logger = new Logger('RegisterUserUseCase');
+export class SocialRegisterUseCase {
+  private readonly logger = new Logger('SocialRegisterUseCase');
 
   constructor(
     @InjectRepository(Tenant)
@@ -22,12 +25,13 @@ export class RegisterUserUseCase {
     @InjectRepository(Suscription)
     private readonly suscriptionRepository: Repository<Suscription>,
 
+    private readonly jwtUtil: JWtUtil,
+
     private readonly dataSource: DataSource,
   ) {}
 
   async execute(registerDto: RegisterDto) {
-
-    const { email, fullName, password } = registerDto;
+    const { email, fullName } = registerDto;
     const queryBuilder = this.userRepository.createQueryBuilder('user');
 
     const userExist = await queryBuilder
@@ -35,9 +39,25 @@ export class RegisterUserUseCase {
       .leftJoinAndSelect('user.tenant', 'tenant')
       .getOne();
 
-
     if (userExist) {
-      throw new BadRequestException(`The User with email ${email} already exists`);
+      const token = this.jwtUtil.getJwtToken({
+        tenantId: userExist.tenantId,
+        userId: userExist.id,
+      });
+
+      await this.userRepository.update({id: userExist.id}, { lastLoginDate: new Date() });
+
+      return (
+        {
+          token,
+          user: {
+            email: userExist.email,
+            fullName: userExist.tenant.fullName,
+            authProvider: userExist.authProvider
+          },
+        } || null
+      );
+      // return userExist;
     }
 
     const queryRunner = this.dataSource.createQueryRunner();
@@ -45,28 +65,28 @@ export class RegisterUserUseCase {
     await queryRunner.startTransaction();
 
     try {
-      const monthsToAdd = parseInt(process.env.SUSCRIPTION_TIME_MONTHS_EXPIRE || '1',10);
+      const monthsToAdd = parseInt(
+        process.env.SUSCRIPTION_TIME_MONTHS_EXPIRE || '1',
+        10,
+      );
       const currentDate = new Date();
-      
 
       // Create Tenant
       const tenant: Tenant = {
         fullName,
         createdAt: new Date(),
-        
       };
       const newTenant = this.tenantRepository.create(tenant);
       const newTenantSaved = await queryRunner.manager.save(newTenant);
 
-      const passwordHash = password?  await bcrypt.hash(password, +process.env.HASH_SALT): null;
-
       // Create User
       const user: User = {
         email,
-        authProvider: AuthProviderEnum.EMAIL,
+        authProvider: AuthProviderEnum.GOOGLE,
         createdAt: new Date(),
-        password: passwordHash,
+        password: null,
         tenantId: newTenantSaved.id,
+        lastLoginDate: new Date()
       };
 
       const newUser = this.userRepository.create(user);
@@ -81,26 +101,31 @@ export class RegisterUserUseCase {
         receivedDate: new Date(),
         cash: +process.env.FREE_CASH,
         expirationDate,
-        tenantId: newTenantSaved.id
-      }
+        tenantId: newTenantSaved.id,
+      };
 
       const newSuscription = this.suscriptionRepository.create(suscription);
       await queryRunner.manager.save(newSuscription);
-
 
       // ********** Commit Transaction **********
       await queryRunner.commitTransaction();
       await queryRunner.release();
 
-      const returnUser: User = {
-        email,
-        authProvider: newUser.authProvider,
+      const token = this.jwtUtil.getJwtToken({
         tenantId: newTenant.id,
-        id: newUser.id,
-        tenant: newTenant,
-      };
+        userId: newUser.id,
+      });
 
-      return returnUser;
+      return (
+        {
+          token,
+          user: {
+            email: newUser.email,
+            fullName: newUser.tenant.fullName,
+            authProvider: newUser.authProvider
+          },
+        } || null
+      );
 
     } catch (error) {
       await queryRunner.rollbackTransaction();

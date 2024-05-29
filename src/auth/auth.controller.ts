@@ -1,8 +1,7 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags } from '@nestjs/swagger';
-import { EmailLoginDto, PasswordRestoreDto, PreviousRegistrationDto, RegisterDto, ResetPasswordDto } from './dtos';
-import { GoogleAuthGuard } from './guards/google-auth.guard';
+import { EmailLoginDto, PasswordRestoreDto, PreviousRegistrationDto, RegisterDto, ResetPasswordDto, SocialRegisterDto } from './dtos';
 import { Auth, GetUser } from './decorators';
 import { UserAccount } from './interfaces';
 
@@ -12,9 +11,14 @@ import { UserAccount } from './interfaces';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('email/login')
-  handleEmailLogin(@Body() emailLoginDto: EmailLoginDto) {
+  @Post('login')
+  emailLogin(@Body() emailLoginDto: EmailLoginDto) {
     return this.authService.emailLogin(emailLoginDto);
+  }
+
+  @Post('social-register')
+  googleRegister(@Body() registerDto: SocialRegisterDto) {
+    return this.authService.socialRegister(registerDto);
   }
 
   @Get('check-status')
@@ -25,23 +29,25 @@ export class AuthController {
     return this.authService.checkAuthStatus(user);
   }
 
-  @Get('google/login')
-  @UseGuards(GoogleAuthGuard)
-  handleGoogleLogin() {
-    return { msg: 'Google Authentication' };
-  }
+  // @Get('google/login')
+  // @UseGuards(GoogleAuthGuard)
+  // handleGoogleLogin() {
+  //   return { msg: 'Google Authentication' };
+  // }
 
-  @Get('google/redirect')
-  @UseGuards(GoogleAuthGuard)
-  handleRedirect(@Req() req: any) {
-    const data = req.user;
-    return data;
-  }
+  // @Get('google/redirect')
+  // @UseGuards(GoogleAuthGuard)
+  // handleRedirect(@Req() req: any) {
+  //   const data = req.user;
+  //   return data;
+  // }
 
-  @Post('email/register')
+  @Post('register')
   register(@Body() registerDto: RegisterDto) {
     return this.authService.registerUser(registerDto);
   }
+
+
 
   @Post('previous-registration')
   previousRegistration(@Body() previousRegistrationDto: PreviousRegistrationDto) {

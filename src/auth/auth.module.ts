@@ -4,7 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthController } from './auth.controller';
 import { Tenant } from './entities/tenant.entity';
 import { User } from './entities/user.entity';
-import { CheckStatusUseCase, EmailLoginUseCase, FindUserUseCase, PasswordRestoreUseCase, PreviousRegistrationUseCase, RegisterUserUseCase, ResetPasswordUseCase } from './use-cases';
+import { CheckStatusUseCase, EmailLoginUseCase, FindUserUseCase, PasswordRestoreUseCase, PreviousRegistrationUseCase, RegisterUserUseCase, ResetPasswordUseCase, SocialRegisterUseCase } from './use-cases';
 import { GoogleStrategy } from './strategies/google.strategy';
 import { SessionSerializer } from './serializers/session.serializer';
 import { JWtUtil } from 'src/common/utils';
@@ -33,6 +33,7 @@ import { Suscription } from 'src/usage/entities/suscription.entity';
     ResetPasswordUseCase,
     CheckStatusUseCase,
     PreviousRegistrationUseCase,
+    SocialRegisterUseCase,
 
     JWtUtil,
     JwtService,

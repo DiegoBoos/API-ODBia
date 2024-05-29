@@ -38,11 +38,14 @@ export class EmailLoginUseCase {
 
     const token = this.jwtUtil.getJwtToken({ tenantId: user.tenantId, userId: user.id });
 
+    await this.userRepository.update({id: user.id}, { lastLoginDate: new Date() });
+
     return {
       token,
       user: {
         email: user.email,
         fullName: user.tenant.fullName,
+        authProvider: user.authProvider
       }
     }
   }

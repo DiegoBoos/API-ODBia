@@ -10,6 +10,7 @@ import { StripeModule } from './stripe/stripe.module';
 import { PayModule } from './pay/pay.module';
 import { OpenaiModule } from './openai/openai.module';
 import { WSocketModule } from './wsocket/wsocket.module';
+import { ChatBotModule } from './chat-bot/chat-bot.module';
 
 
 
@@ -23,6 +24,7 @@ import { WSocketModule } from './wsocket/wsocket.module';
     PayModule,
     OpenaiModule,
     WSocketModule,
+    ChatBotModule,
   ],
   controllers: [],
   providers: [],
