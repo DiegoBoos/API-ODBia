@@ -11,6 +11,8 @@ import { PayModule } from './pay/pay.module';
 import { OpenaiModule } from './openai/openai.module';
 import { WSocketModule } from './wsocket/wsocket.module';
 import { ChatBotModule } from './chat-bot/chat-bot.module';
+import { UserModule } from './user/user.module';
+
 
 
 
@@ -25,6 +27,7 @@ import { ChatBotModule } from './chat-bot/chat-bot.module';
     OpenaiModule,
     WSocketModule,
     ChatBotModule,
+    UserModule,
   ],
   controllers: [],
   providers: [],
