@@ -7,6 +7,8 @@ export class StripeService {
   constructor(private readonly checkoutUseCase: CheckoutUseCase) {}
 
   async createCheckout(user: UserAccount) {
+    console.log(user);
+    
     return await this.checkoutUseCase.create(user);
   }
 }

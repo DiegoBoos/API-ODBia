@@ -13,6 +13,10 @@ export class Invoice {
   @Column({ name: 'state' })
   state: string;
 
+  // @ApiProperty()
+  // @Column({ name: 'invoice', unique: true })
+  // invoice: string;
+
   @ApiProperty()
   @Column({ name: 'session_id' })
   sessionId: string;

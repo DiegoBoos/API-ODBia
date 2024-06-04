@@ -13,7 +13,7 @@ export class UsageController {
     return this.usageService.getSuscriptions(user);
   }
 
-  @Get('usage-statistics')
+  @Get('statistics')
   @Auth()
   getUsageStatistics( @GetUser() user: UserAccount ) {
     return this.usageService.getUsageStatistics(user);

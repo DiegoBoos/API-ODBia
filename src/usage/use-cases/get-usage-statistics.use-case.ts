@@ -17,12 +17,8 @@ export class GetUsageStatisticsUseCase {
   ) {}
 
   async execute(user: UserAccount) {
-    const { tenantId } = user;
 
     const currentSuscription = await this.getCurrentSuscriptionUseCase.execute(user);
-
-    console.log(currentSuscription);
-    
 
     const queryBuilder =
       this.suscriptionRepository.createQueryBuilder('suscription');
@@ -35,16 +31,21 @@ export class GetUsageStatisticsUseCase {
       .addSelect('SUM(transactions.usagePrice)', 'totalUsagePrice')
       .leftJoin('suscription.transactions', 'transactions')
       .leftJoin('transactions.service', 'service')
-      // .where({ tenantId })
       .where({ id:currentSuscription.suscriptionId })
       .addGroupBy('suscription.expiration_date')
       .addGroupBy('service.id')
       .addGroupBy('service.name')
       .getRawMany();
 
+    
+
+    const usagePercentage = (+currentSuscription.totalUsagePrice/+currentSuscription.cash * 100).toFixed(2);
+    
+
     return {
 
         currentSuscription,
+        usagePercentage,
         usageStatistics
       
     };

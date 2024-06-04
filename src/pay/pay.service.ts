@@ -10,7 +10,7 @@ export class PayService {
     private readonly checkoutFailedUseCase: CheckoutFailedUseCase,
   ) {}
 
-  async checkoutSucces(sessionDto: SessionDto) {
+  async checkoutSuccess(sessionDto: SessionDto) {
     return await this.checkoutSuccessUseCase.execute(sessionDto);
   }
 

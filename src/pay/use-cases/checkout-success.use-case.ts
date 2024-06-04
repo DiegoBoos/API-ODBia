@@ -71,7 +71,7 @@ export class CheckoutSuccessUseCase {
             const savedInvoice = await queryRunner.manager.save(newInvoice);
 
             const currentSuscription = await this.suscriptionRepository.findOne(
-              { where: { expirationDate: MoreThan(new Date()) } },
+              { where: { expirationDate: MoreThan(new Date()), tenantId: user.tenantId } },
             );
 
             if (currentSuscription) {
